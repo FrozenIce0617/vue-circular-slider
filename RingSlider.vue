@@ -221,9 +221,9 @@ export default {
       }
     },
     imgButton() {
-      const imgGreen = require("../../svg/icons/add_green.png");
-      const imgOrange = require("../../svg/icons/add_orange.png");
-      const imgRed = require("../../svg/icons/add_red.png");
+      const imgGreen = require("./svg/icons/add_green.png");
+      const imgOrange = require("./svg/icons/add_orange.png");
+      const imgRed = require("./svg/icons/add_red.png");
 
       if (this.direction === true) {
         if (this.completedSteps <= 4) return imgRed;

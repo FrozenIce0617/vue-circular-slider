@@ -86,57 +86,12 @@ export default {
       required: false,
       default: true
     },
-    animateSpeed: {
-      type: Number,
-      required: false,
-      default: 1000
-    },
-    fps: {
-      type: Number,
-      required: false,
-      default: 60
-    },
-    timingFunc: {
-      type: String,
-      required: false,
-      default: "linear"
-    },
     link: {
       type: String,
       required: false,
       default: "#"
     }
   },
-  data() {
-    return {
-      gradient: {
-        fx: 0.99,
-        fy: 0.5,
-        cx: 0.5,
-        cy: 0.5,
-        r: 0.65
-      },
-      gradientAnimation: null,
-      currentAngle: 0,
-      strokeDashoffset: 0
-    };
-  },
-  data() {
-    return {
-      diameter: 300,
-      gradient: {
-        fx: 0.99,
-        fy: 0.5,
-        cx: 0.5,
-        cy: 0.5,
-        r: 0.65
-      },
-      gradientAnimation: null,
-      currentAngle: 0,
-      strokeDashoffset: 0
-    };
-  },
-
   computed: {
     radius() {
       return this.diameter / 2;
@@ -150,26 +105,11 @@ export default {
       }
       return 100 / this.totalSteps;
     },
-    finishedPercentage() {
-      return this.stepSize * this.completedSteps;
-    },
-    circleSlice() {
-      return (2 * Math.PI) / this.totalSteps;
-    },
-    animateSlice() {
-      return this.circleSlice / this.totalPoints;
-    },
     innerCircleDiameter() {
       return this.diameter - this.strokeWidth * 2 - this.imgSize / 2;
     },
     innerCircleRadius() {
       return this.innerCircleDiameter / 2;
-    },
-    totalPoints() {
-      return this.animateSpeed / this.animationIncrements;
-    },
-    animationIncrements() {
-      return 1000 / this.fps;
     },
     containerStyle() {
       return {
@@ -336,55 +276,6 @@ export default {
     }
   },
   methods: {
-    getStopPointsOfCircle(steps) {
-      const points = [];
-      for (let i = 0; i < steps; i++) {
-        const angle = this.circleSlice * i;
-        points.push(this.getPointOfCircle(angle));
-      }
-      return points;
-    },
-    getPointOfCircle(angle) {
-      const x = this.radius + this.radius * Math.cos(angle);
-      const y = this.radius + this.radius * Math.sin(angle);
-      return { x, y };
-    },
-    gotoPoint() {
-      const point = this.getPointOfCircle(this.currentAngle);
-      this.gradient.fx = point.x;
-      this.gradient.fy = point.y;
-    },
-    changeProgress({ isAnimate = true }) {
-      this.strokeDashoffset =
-        ((100 - this.finishedPercentage) / 100) * this.circumference;
-      if (this.gradientAnimation) {
-        clearInterval(this.gradientAnimation);
-      }
-      if (!isAnimate) {
-        this.gotoNextStep();
-        return;
-      }
-      const angleOffset = (this.completedSteps - 1) * this.circleSlice;
-      let i = (this.currentAngle - angleOffset) / this.animateSlice;
-      const incrementer = Math.abs(i - this.totalPoints) / this.totalPoints;
-      const isMoveForward = i < this.totalPoints;
-      this.gradientAnimation = setInterval(() => {
-        if (
-          (isMoveForward && i >= this.totalPoints) ||
-          (!isMoveForward && i < this.totalPoints)
-        ) {
-          clearInterval(this.gradientAnimation);
-          return;
-        }
-        this.currentAngle = angleOffset + this.animateSlice * i;
-        this.gotoPoint();
-        i += isMoveForward ? incrementer : -incrementer;
-      }, this.animationIncrements);
-    },
-    gotoNextStep() {
-      this.currentAngle = this.completedSteps * this.circleSlice;
-      this.gotoPoint();
-    },
     getComponentSize() {
       const el = document.getElementById("ring-container");
       const width = el.clientWidth;
@@ -397,20 +288,6 @@ export default {
         x: centerX + radius * Math.cos(angleInRadians),
         y: centerY + radius * Math.sin(angleInRadians)
       };
-    }
-  },
-  watch: {
-    totalSteps() {
-      this.changeProgress({ isAnimate: true });
-    },
-    completedSteps() {
-      this.changeProgress({ isAnimate: true });
-    },
-    diameter() {
-      this.changeProgress({ isAnimate: true });
-    },
-    strokeWidth() {
-      this.changeProgress({ isAnimate: true });
     }
   },
   created() {

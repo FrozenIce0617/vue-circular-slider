@@ -17,5 +17,5 @@
   <template v-slot:title>{{ __('###') }}</template>
   <template v-slot:sub-title>{{ __('###') }}</template>
   <template v-slot:btn-text>{{ __('###') }}</template>
-</<ring-slider>
+</ring-slider>
 ```
